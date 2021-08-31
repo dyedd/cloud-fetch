@@ -1,0 +1,56 @@
+{
+    "name": "cloud-fetch",
+    "publisher": "dyeddi",
+    "author": "dyeddi",
+    "keywords": [
+        "cloudide",
+        "plugin"
+    ],
+    "version": "0.0.1",
+    "license": "SEE LICENSE IN LICENSE",
+    "description": "方便远程请求",
+    "displayName": "cloud-fetch",
+    "icon": "resources/icons/logo.png",
+    "files": [
+        "src"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "devDependencies": {
+        "@cloudide/plugin": "latest",
+        "@cloudide/plugin-packager": "latest",
+        "rimraf": "2.6.2",
+        "ts-loader": "^6.0.4",
+        "typescript": "^3.9.7",
+        "typescript-formatter": "7.2.2",
+        "webpack": "^4.39.2",
+        "webpack-cli": "^3.3.7"
+    },
+    "dependencies": {
+        "@cloudide/core": "latest",
+        "@cloudide/messaging": "latest",
+        "@cloudide/nls": "latest",
+        "@types/qs": "^6.9.7",
+        "qs": "^6.10.1"
+    },
+    "scripts": {
+        "prepare": "npm run clean && npm run build",
+        "clean": "rimraf dist",
+        "format-code": "tsfmt -r",
+        "watch": "tsc -watch",
+        "compile": "tsc",
+        "pack": "cloudide-pack -p",
+        "build": "npm run format-code && npm run compile && webpack",
+        "build-browser": "webpack --config webpack.config.js"
+    },
+    "engines": {
+        "theiaPlugin": "next"
+    },
+    "theiaPlugin": {
+        "backend": "dist/plugin.js"
+    },
+    "extensionDependencies": [
+        "huawei-builtin.huawei-cloudide-common"
+    ]
+}
