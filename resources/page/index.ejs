@@ -5,14 +5,146 @@
 	<meta charset="utf-8" />
 	<title><%= l10n['plugin.index.title'] %></title>
 	<link rel="stylesheet" href="css/default.css" crossorigin="anonymous">
-	<link rel="stylesheet" href="css/main.css" crossorigin="anonymous">
-	<script type="text/javascript" src="dist/index.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/main.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="dist/index.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+         
+    // JS实现选项卡切换
+        window.onload = function() {
+            //js控制tab 栏的切换
+            var oTab = document.getElementById("tabs");
+            var oUl = oTab.getElementsByTagName("ul")[0];
+            var oLis = oUl.getElementsByTagName("li");
+            var oDivs = oTab.getElementsByClassName("tabs_div");
+            for (var i = 0; i < oLis.length; i++) {
+                oLis[i].index = i;
+                oLis[i].onclick = function() {
+                    for (var n = 0; n < oLis.length; n++) {
+                        oLis[n].className = "";
+                        oDivs[n].className = "tabs_div hide";
+                    }
+                    this.className = "active";
+                    oDivs[this.index].className = "tabs_div show";
+                }
+            };
+            let headerData = {}
+            //headers 添加按钮
+            let headerKey = '',
+                headerValue = '';
+
+            var pageTwo = document.getElementById("secondPag");
+            var headersContent = pageTwo.getElementsByClassName("params_content")[0];
+            var headersLi = headersContent.getElementsByClassName("params_li");
+            var headersAddBtn = pageTwo.getElementsByClassName("addheaders")[0];
+            let childNode = headersLi[1].cloneNode(true)
+            headersLi[1].children[0].children[0].onchange = function(e) {
+                headerKey = e.target.value;
+                headerData[headerKey] = headerValue;
+            }
+            headersLi[1].children[1].children[0].onchange = function(e) {
+                headerValue = e.target.value;
+                headerData[headerKey] = headerValue;
+            }
+            headersAddBtn.onclick = function() {
+                var newLi = document.createElement('div');
+                newLi = childNode.cloneNode(true);
+                headersContent.appendChild(newLi);
+                newLi.children[0].children[0].onchange = function(e) {
+                    headerKey = e.target.value;
+                    headerData[headerKey] = headerValue;
+                }
+                newLi.children[1].children[0].onchange = function(e) {
+                    headerValue = e.target.value;
+                    headerData[headerKey] = headerValue;
+                }
+                console.log(headerData);
+            }
+
+
+            //body JSON输入框
+            var pageThree = document.getElementById("thirdPag");
+            var bodyInput = pageThree.getElementsByTagName("textarea")[0];
+            console.log(bodyInput);
+            bodyInput.onchange = function(e) {
+                var JSONInput = JSON.parse(e.target.value);
+                console.log(JSONInput);
+            }
+            var hideHeaders = document.getElementById("hideHeaders");
+            //response
+            var send = document.getElementById("send");
+            send.onclick = function() {
+                hideHeaders.value = JSON.stringify(headerData);
+            }
+        }
+     
+    </script>
 </head>
 
 <body class="plugin-body">
     
     <div><%= l10n['plugin.index.description'] %></div>
+    <div class="baseUrl">
+        <input type="text" id='baseUrl' class="form-control" placeholder="input your base url" />
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="input-group">
+                <select id='method'>
+                  <option value="GET">GET</li>
+                  <option value="POST">POST</li>
+                  <option value="PUT">PUT</li>
+                  <option value="DELETE">DELETE</li>
+                  <option value="FETCH">FETCH</li>
+              </select>
+                <input type="text" id='url' class="form-control" placeholder="input your url" aria-label="...">
+            </div>
+            <!-- /input-group  -->
+        </div>
+        <!-- /.col-lg-6 -->
 
+        <div class="col-lg-6">
+            <button id='send' type="button" class="btn btn-success">Send</button>
+        </div>
+    </div>
+
+    <div id="tabs">
+        <ul class="nav nav-tabs params_tab">
+            <li role="presentation" class="active"><a href="#">Headers</a></li>
+            <li role="presentation"><a href="#">Body</a></li>
+        </ul>
+        <div id="secondPag" class="tabs_div show">
+            <div class="params_content">
+                <div class="params_li">
+                    <div>KEY</div>
+                    <div>VALUE</div>
+                </div>
+                <div class="params_li">
+                    <div>
+                        <input type="text" class="form-control" placeholder="Key">
+                    </div>
+                    <div>
+                        <input type="text" class="form-control" placeholder="Value">
+                    </div>
+                </div>
+            </div>
+            <button class=" btn btn-xs btn-default addheaders">+ Add header</button>
+        </div>
+        <div id="thirdPag" class="tabs_div hide">
+            <textarea id="bodyJson" autofocus rows="10" class="form-control"></textarea>
+        </div>
+    </div>
+
+    <!-- <div class="hide">
+        <textarea id='response' autofocus rows="10" class="form-control"></textarea>
+    </div> -->
+    <div class="hide">
+        <input type="hidden" id='hideHeaders'>
+    </div>
+    <div id="response">
+
+    </div>
 </body>
 
 </html>

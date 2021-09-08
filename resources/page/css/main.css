@@ -1,1 +1,95 @@
 /*add your plugin main page css here*/
+button,
+        select {
+            outline: none;
+        }
+        
+        .btn:focus {
+            outline: none !important;
+            outline-offset: 0 !important;
+        }
+        
+        select {
+            border-radius: 4px 0 0 4px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            border: 1px solid #ccc;
+        }
+        
+        select::-ms-expand {
+            border: none;
+            color: gray;
+            background-color: transparent;
+        }
+        
+        .baseUrl {
+            margin: 10px 0;
+        }
+        
+        .row {
+            display: flex;
+        }
+        
+        .row .input-group {
+            display: flex;
+        }
+        
+        #tabs {
+            margin: 10px 0;
+        }
+        
+        #tabs .tabs_div {
+            padding: 10px;
+        }
+        
+        .Query_Params {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+            margin-bottom: 5px;
+        }
+        
+        #secondPag {
+            border: 1px solid #ccc;
+        }
+        
+        .params_content .params_li {
+            width: 100%;
+            padding: 5px 10px;
+            display: flex;
+        }
+        
+        .params_content .params_li:first-child {
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .params_content .params_li div {
+            width: 100%;
+        }
+        
+        .params_content .params_li div input {
+            width: 95%;
+        }
+        
+        .addQueryParams {
+            border-radius: 10px;
+            outline: none;
+            margin: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: transparent;
+        }
+        
+        .addheaders {
+            border-radius: 10px;
+            outline: none;
+            margin: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: transparent;
+        }
+        
+        .show {
+            display: block;
+        }
+        
+        .hide {
+            display: none;
+        }
