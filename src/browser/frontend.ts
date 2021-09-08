@@ -26,7 +26,29 @@ class Frontend extends AbstractFrontend {
      * In this function your can call function exposed by backend
      */
     run(): void {
-        this.plugin.call('your_backend_function_identifier', 'world');
+        document.getElementById('send')?.addEventListener('click', async () => {
+            let baseUrl: string = (document.getElementById('baseUrl') as HTMLInputElement).value;
+            let url: string = (document.getElementById('url') as HTMLInputElement).value;
+            let method: string = (document.getElementById('method') as HTMLInputElement).value;
+            let bodyJson: string = (document.getElementById('bodyJson') as HTMLTextAreaElement).value;
+            let hideHeaders: string = (document.getElementById('hideHeaders') as HTMLInputElement).value;
+            let config = {
+                body: bodyJson ? JSON.parse(bodyJson) : {},
+                method,
+                m: method,
+                headers: hideHeaders ? JSON.parse(hideHeaders) : {}
+            }
+            // console.log(config)
+            this.plugin.call('get_apiurl', baseUrl);
+            console.log('----')
+            this.plugin.call('postData', url, config).then(
+                ret => {
+                    document.getElementById('response')?.appendChild(document.createElement('pre').appendChild(document.createTextNode(`${JSON.stringify(ret)}`)));
+                    console.log(JSON.stringify(ret))
+                }
+            );
+            console.log('++++')
+        })
     }
 
     stop(): void {
@@ -43,11 +65,11 @@ class Frontend extends AbstractFrontend {
      * 
      * ```
      */
-    @expose('myplugin.page.myApi')
-    public myApi(message: string): string {
-        console.log(message);
-        return 'this is a return value from frontend function';
-    }
+    // @expose('myplugin.page.myApi')
+    // public myApi(message: string): string {
+    //     console.log(message);
+    //     return 'this is a return value from frontend function';
+    // }
 
 }
 

@@ -8,7 +8,8 @@ import * as qs from "qs";
 import { exposable, expose } from '@cloudide/messaging';
 import { LogLevel } from '@cloudide/core/lib/common/plugin-common';
 import { AbstractBackend } from '@cloudide/core/lib/node/plugin-api';
-
+// import fetch, { RequestInit } from 'node-fetch';
+import axios, { AxiosRequestConfig } from 'axios'
 /**
  * Add your backend api in this class
  * Using '@expose' to expose your function to frontend
@@ -28,8 +29,8 @@ export class Backend extends AbstractBackend {
      * In this function you can call function exposed by frontend 
      */
     public async run(): Promise<void> {
-        const retValue = await this.plugin.call('myplugin.page.myApi', 'this is a function call from backend');
-        this.plugin.log(LogLevel.INFO, retValue);
+        // const retValue = await this.plugin.call('myplugin.page.myApi', 'this is a function call from backend');
+        // this.plugin.log(LogLevel.INFO, retValue);
     }
 
     public stop(): void {
@@ -55,36 +56,54 @@ export class Backend extends AbstractBackend {
     @expose('get_apiurl')
     public getapiUrl(url: string): void {
         this.apiUrl = url;
+        // cloudide.window.showInformationMessage(`hello ${this.apiUrl}!`)
     }
     @expose('postData')
-    public postData(endpoint: string, { data, token, headers, ...customConfig }: Config = {}) {
+    public postData(endpoint: string, { m, body, token, headers, ...customConfig }: Config = {}) {
         const config = {
-            method: "GET",
             headers: {
                 Authorization: token ? `Bearer ${token}` : "",
-                "Content-Type": data ? "application/json" : "",
+                "Content-Type": body ? "application/json" : "",
             },
+            url: `${this.apiUrl}/${endpoint}`,
             ...customConfig,
         };
-        if (config.method.toUpperCase() === "GET") {
-            endpoint += `?${qs.stringify(data)}`;
+        m = config.method as string;
+        if (m.toUpperCase() === "GET") {
+            if (JSON.stringify(body) !== '{}')
+                config.url += `?${qs.stringify(body)}`;
         } else {
-            config.body = JSON.stringify(data || {});
+            config.data = body || {};
         }
-        return window
-            .fetch(`${this.apiUrl}/${endpoint}`, config)
-            .then(async (response) => {
-                const data = await response.json();
-                if (response.ok) {
-                    return data;
-                } else {
-                    return Promise.reject(data);
-                }
-            });
+        // return new Promise((resolve, reject) => {
+        //     axios(config).then(res => {
+        //         cloudide.window.showInformationMessage(`${JSON.stringify(res.data)}`)
+        //         return res.data;
+        //         // resolve(res)
+        //     }).catch((response) => {
+        //         return reject(response)
+        //     })
+        // })
+        return axios(config).then(res => {
+            // cloudide.window.showInformationMessage(`${JSON.stringify(res.data)}`)
+            return res.data;
+            // resolve(res)
+        })
+        // axios(config).then((res) => {
+        //     cloudide.window.showInformationMessage(`hello ${JSON.stringify(res)}!`)
+        //     return res.data
+        // });
+        // const res = await fetch(`${this.apiUrl}/${endpoint}`, config)
+        // return await res.json();
     }
 
 }
-interface Config extends RequestInit {
+// interface Config extends RequestInit {
+//     token?: string;
+//     data?: object;
+// }
+interface Config extends AxiosRequestConfig {
+    m?: string;
     token?: string;
-    data?: object;
+    body?: object;
 }
