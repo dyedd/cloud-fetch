@@ -96,12 +96,66 @@ export class Backend extends AbstractBackend {
         // const res = await fetch(`${this.apiUrl}/${endpoint}`, config)
         // return await res.json();
     }
+    @expose('logs')
+    public async createNewFile(msg: string) {
+        const edit = new cloudide.WorkspaceEdit();
+        if (cloudide.workspace.workspaceFolders) {
+            const filePath = cloudide.Uri.file(`${cloudide.workspace.workspaceFolders[0].uri.fsPath}/.logs/${(new Date()).toLocaleString().replace(/\//g, '-').replace(/\, /g, '-')}.txt`);
+            if (!edit.has(filePath)) {
+                edit.createFile(filePath);
+                cloudide.workspace.applyEdit(edit);
+            }
+            console.log(msg)
+            this.writeTextFile(filePath, this.textHandler(msg));
 
+            // filePath.path;
+        }
+        // return absPath;
+    }
+    public writeTextFile(uri: cloudide.Uri, text: string): Promise<void> {
+        return new Promise((resolve: () => void, reject: (err: any) => void) => {
+            cloudide.workspace.fs.writeFile(uri, new TextEncoder().encode(text)).then(resolve, reject);
+        });
+    }
+    public textHandler(msg: string): string {
+        const current = new Date().toLocaleString();
+        const inintJSon = this.configHandler(JSON.parse(msg))
+        return `本日志由Cloud-Fetch驱动🎉` + "\n" +
+            `⚙请求时间：${current}` + "\n" +
+            `++++++++++++++++++++++++++++++++++` + "\n" +
+            `++++++++++++++++++++++++++++++++++` + "\n" +
+            `++++++++++++++++++++++++++++++++++` + "\n" +
+            `🎯请求URL：${inintJSon.baseUrl}/${inintJSon.url}` + "\n" +
+            `----------------------------------` + "\n" +
+            `----------------------------------` + "\n" +
+            `----------------------------------` + "\n" +
+            `🔊配置：` + "\n" +
+            `${JSON.stringify(inintJSon.config, null, "\t")}` + "\n" +
+            `==================================` + "\n" +
+            `==================================` + "\n" +
+            `==================================` + "\n" +
+            `==================================` + "\n" +
+            `🥇结果：` + "\n" +
+            `${JSON.stringify(inintJSon.data, null, "\t")}`
+    }
+    private configHandler(log: LogConfig) {
+        if (log.config.m?.toUpperCase() === "GET") {
+            if (JSON.stringify(log.config.body) !== '{}')
+                log.url += `?${qs.stringify(log.config.body)}`;
+        } else {
+            log.config.data = log.config.body || {};
+        }
+        delete log.config.m
+        delete log.config.body
+        return log
+    }
 }
-// interface Config extends RequestInit {
-//     token?: string;
-//     data?: object;
-// }
+interface LogConfig {
+    config: Config;
+    baseUrl?: string;
+    data: object;
+    url: string;
+}
 interface Config extends AxiosRequestConfig {
     m?: string;
     token?: string;

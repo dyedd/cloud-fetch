@@ -40,14 +40,15 @@ class Frontend extends AbstractFrontend {
             }
             // console.log(config)
             this.plugin.call('get_apiurl', baseUrl);
-            console.log('----')
+            // console.log('----')
             this.plugin.call('postData', url, config).then(
                 ret => {
-                    document.getElementById('response')?.appendChild(document.createElement('pre').appendChild(document.createTextNode(`${JSON.stringify(ret)}`)));
-                    console.log(JSON.stringify(ret))
+                    document.getElementById('response')?.appendChild(document.createElement('pre').appendChild(document.createTextNode(`${JSON.stringify(ret, null, "\t")}`)));
+                    this.plugin.call('logs', JSON.stringify({ baseUrl, url, config, data: ret }))
+                    // console.log(JSON.stringify(ret))
                 }
             );
-            console.log('++++')
+            // console.log('++++')
         })
     }
 
