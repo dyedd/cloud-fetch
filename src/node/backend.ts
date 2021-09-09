@@ -145,8 +145,11 @@ export class Backend extends AbstractBackend {
         } else {
             log.config.data = log.config.body || {};
         }
-        delete log.config.m
+        log.config.headers.Authorization = log.config.token ? `Bearer ${log.config.token}` : ''
+        log.config.headers['Content-Type'] = log.config.body ? "application/json" : "",
+            delete log.config.m
         delete log.config.body
+        delete log.config.token
         return log
     }
 }

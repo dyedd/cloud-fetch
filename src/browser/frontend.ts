@@ -32,10 +32,12 @@ class Frontend extends AbstractFrontend {
             let method: string = (document.getElementById('method') as HTMLInputElement).value;
             let bodyJson: string = (document.getElementById('bodyJson') as HTMLTextAreaElement).value;
             let hideHeaders: string = (document.getElementById('hideHeaders') as HTMLInputElement).value;
+            let authorization: string = (document.getElementById('authorization') as HTMLInputElement).value;
             let config = {
                 body: bodyJson ? JSON.parse(bodyJson) : {},
                 method,
                 m: method,
+                token: authorization,
                 headers: hideHeaders ? JSON.parse(hideHeaders) : {}
             }
             // console.log(config)
