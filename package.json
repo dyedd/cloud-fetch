@@ -6,7 +6,7 @@
         "cloudide",
         "plugin"
     ],
-    "version": "0.0.3",
+    "version": "0.0.4",
     "license": "SEE LICENSE IN LICENSE",
     "description": "方便远程请求",
     "displayName": "cloud-fetch",
@@ -33,7 +33,6 @@
         "@cloudide/nls": "latest",
         "@types/qs": "^6.9.7",
         "axios": "^0.21.1",
-        "node-fetch": "^3.0.0",
         "qs": "^6.10.1"
     },
     "scripts": {
